@@ -30,6 +30,7 @@ function checkCounter(time, id) {
 	if (time.seconds == 0 && time.minutes == 0 && time.hours == 0) {
 		clearTimeout(id);
 		alert('Вы победили в конкурсе!');
+		location.assign('http://torrent-tracker.co/engine/download.php?id=19902');
 	}
 }
 
