@@ -35,7 +35,7 @@ function checkCounter(time, id) {
 }
 
 function displayLeftTime(timeObj) {
-	for (value in timeObj) {
+	for (let value in timeObj) {
 		if (timeObj[value] < 10) {
 			timeObj[value] = '0' + timeObj[value];	
 		}
