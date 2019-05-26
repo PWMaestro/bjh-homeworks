@@ -1,7 +1,11 @@
+body {
+  display: flex;
+}
+
 .dropdown {
   list-style-type: none;
   padding: 0;
-  margin: 0;
+  margin-right: 20px;
   position: relative;
   font-family: Helvetica;
   font-weight: 300;
