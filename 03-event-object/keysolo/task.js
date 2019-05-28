@@ -4,6 +4,8 @@ class Game {
     this.wordElement = container.querySelector('.word');
     this.winsElement = container.querySelector('.status__wins');
     this.lossElement = container.querySelector('.status__loss');
+    this.timerElement = container.querySelector('.status__timer');
+    this.timer = { end: 0, id: 0 };
 
     this.reset();
 
@@ -12,11 +14,30 @@ class Game {
 
   reset() {
     this.setNewWord();
+    this.setTimer();
     this.winsElement.textContent = 0;
     this.lossElement.textContent = 0;
+    this.timerElement.textContent = 0;
+  }
+
+  setTimer() {
+  	const timeLeft = Array.from(document.getElementsByClassName('symbol')).length;
+  	this.timerElement.textContent = timeLeft;
+  	this.timer.end = Date.now() + timeLeft * 1000;
+  	this.timer.id = setInterval(() => {
+  		const leftSec = Math.round((this.timer.end - Date.now()) / 1000);
+  		if (leftSec <= 0) {
+  			clearInterval(this.timer.id);
+  			this.fail();
+  		}
+  		this.timerElement.textContent = Math.round((this.timer.end - Date.now()) / 1000);
+  	}, 1000);
   }
 
   registerEvents() {
+  	window.addEventListener('load', () => {
+  		this.setTimer();
+  	});
   	document.addEventListener('keypress', event => {
   		(event.key.toLowerCase() !== this.currentSymbol.textContent.toLowerCase())
   		? this.fail()
@@ -36,6 +57,7 @@ class Game {
       this.reset();
     }
     this.setNewWord();
+    this.setTimer();
   }
 
   fail() {
@@ -44,6 +66,7 @@ class Game {
       this.reset();
     }
     this.setNewWord();
+    this.setTimer();
   }
 
   setNewWord() {
