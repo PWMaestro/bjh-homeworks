@@ -3,11 +3,17 @@ class Controls {
 		this.book = book;
 		this.fontSizePanel = {
 			value: book.querySelector('.book__control_font-size'),
-			elements: Array.from(book.getElementsByClassName('font-size'))
+			elements:
+				Array.from(
+					book.querySelector('.book__control_font-size')
+						.getElementsByClassName('font-size'))
 		}
 		this.textColorPanel = {
 			value: book.querySelector('.book__control_color'),
-			elements: Array.from(book.getElementsByClassName('color'))
+			elements:
+				Array.from(
+					book.querySelector('.book__control_color')
+						.getElementsByClassName('color'))
 		}
 
 		this.registerEvents();
@@ -61,9 +67,13 @@ class Controls {
 		});
 
 		if (element.classList.contains('font-size_small')) {
-			this.book.classList.add(`book_fs-${element.dataset.size}`);
+			this.book
+				.classList
+				.add(`book_fs-${element.dataset.size}`);
 		} else if (element.classList.contains('font-size_big')) {
-			this.book.classList.add(`book_fs-${element.dataset.size}`);
+			this.book
+				.classList
+				.add(`book_fs-${element.dataset.size}`);
 		}
 	}
 
@@ -75,9 +85,13 @@ class Controls {
 		});
 
 		if (element.classList.contains('color_gray')) {
-			this.book.classList.add(`book_color-${element.dataset.color}`);
+			this.book
+				.classList
+				.add(`book_color-${element.dataset.color}`);
 		} else if (element.classList.contains('color_whitesmoke')) {
-			this.book.classList.add(`book_color-${element.dataset.color}`);
+			this.book
+				.classList
+				.add(`book_color-${element.dataset.color}`);
 		}
 	}
 
