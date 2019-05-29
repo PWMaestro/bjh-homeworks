@@ -8,6 +8,7 @@ function rotate(roll) {
 			activeAdIndex = 0;
 		}
 		adList[activeAdIndex].classList.add('rotator__case_active');
+		adList[activeAdIndex].style.color = adList[activeAdIndex].dataset.color;
 	}, 1000);
 }
 
