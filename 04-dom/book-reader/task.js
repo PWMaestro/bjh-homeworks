@@ -15,6 +15,13 @@ class Controls {
 					book.querySelector('.book__control_color')
 						.getElementsByClassName('color'))
 		}
+		this.backColorPanel = {
+			value: book.querySelector('.book__control_background'),
+			elements:
+				Array.from(
+					book.querySelector('.book__control_background')
+						.getElementsByClassName('color'))
+		}
 
 		this.registerEvents();
 	}
@@ -57,6 +64,25 @@ class Controls {
 			});
 
 		});
+
+		this.backColorPanel.elements.forEach((item, i) => { //addEventListener on background-color controller
+			item.addEventListener('click', (event) => {
+				event.preventDefault();
+				this.backColorPanel
+					.value
+					.querySelector('.color_active')
+					.classList
+					.remove('color_active');
+
+				this.backColorPanel
+					.elements[i]
+					.classList
+					.add('color_active');
+	
+				this.setBackColor(item);
+			});
+
+		});
 	}
 
 	setScaledFontSize(element) {
@@ -95,42 +121,23 @@ class Controls {
 		}
 	}
 
-/*
-	registerEvents() {
-		this.fontSizePanel.elements.forEach((item, i) => {
-			item.addEventListener('click', (event) => {
-				event.preventDefault();
-				this.fontSizePanel
-					.value
-					.querySelector('.font-size_active')
-					.classList
-					.remove('font-size_active');
-
-				this.fontSizePanel
-					.elements[i]
-					.classList
-					.add('font-size_active');
-	
-				this.setScaledFontSize(item);
-			});
-
-		});
-	}
-
-	setScaledFontSize(element) {
+	setBackColor(element) {
 		this.book.classList.forEach((item) => {
-			if (item !== 'book') {
+			if ( (item !== 'book') && item.includes('book_bg-') ) {
 				this.book.classList.remove(item);
 			}
 		});
 
-		if (element.classList.contains('font-size_small')) {
-			this.book.classList.add(`book_fs-${element.dataset.size}`);
-		} else if (element.classList.contains('font-size_big')) {
-			this.book.classList.add(`book_fs-${element.dataset.size}`);
+		if (element.classList.contains('color_gray')) {
+			this.book
+				.classList
+				.add(`book_bg-${element.dataset.color}`);
+		} else if (element.classList.contains('color_black')) {
+			this.book
+				.classList
+				.add(`book_bg-${element.dataset.color}`);
 		}
 	}
-	*/
 }
 
 new Controls(document.getElementById('book'));
