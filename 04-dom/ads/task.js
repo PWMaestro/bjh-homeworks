@@ -1,27 +1,34 @@
-function rotate(roll) {
-	const adList = Array.from(roll.getElementsByClassName('rotator__case'));
-	let activeAdIndex = adList.indexOf(roll.querySelector('.rotator__case_active'));
-	let rotatorId = 0;
+class Rotator {
+	constructor(roll) {
+		this.elemList = Array.from(roll.getElementsByClassName('rotator__case'));
+		this.index = this.elemList.indexOf(roll.querySelector('.rotator__case_active'));
+		this.id = 0;
 
-	function next() {
-		adList[activeAdIndex].classList.remove('rotator__case_active');
-		if (++activeAdIndex === adList.length) {
-			activeAdIndex = 0;
-		}
-		adList[activeAdIndex].classList.add('rotator__case_active');
-		adList[activeAdIndex].style.color = adList[activeAdIndex].dataset.color;
-		rotatorId = setTimeout(next, adList[activeAdIndex].dataset.speed);
+		this.next();
 	}
 
-	return () => {
-		if (rotatorId === 0) {
-			next();
-			return rotatorId;
-		} else {
-			return rotatorId;
+	next() {
+		this.elemList[this.index].classList.remove('rotator__case_active');
+
+		if (++this.index === this.elemList.length) {
+			this.index = 0;
 		}
+		
+		this.elemList[this.index]
+			.classList
+			.add('rotator__case_active');
+
+		const color = this.elemList[this.index]
+			.dataset
+			.color;
+
+		this.elemList[this.index].style.color = color;
+
+		this.id = setTimeout(() => {
+			this.next();
+		},
+		this.elemList[this.index].dataset.speed);
 	}
 }
 
-const rotatorId = rotate(document.querySelector('.rotator'));
-rotatorId();// returns Id to clear current timeout
+new Rotator(document.querySelector('.rotator'));
