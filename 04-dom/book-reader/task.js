@@ -1,143 +1,109 @@
-class Controls {
-	constructor(book) {
-		this.book = book;
-		this.fontSizePanel = {
-			value: book.querySelector('.book__control_font-size'),
-			elements:
-				Array.from(
-					book.querySelector('.book__control_font-size')
-						.getElementsByClassName('font-size'))
+class ControlPanel {
+	/*data = {
+		mainElem: [HTML element] main container of panel,
+		elements = {
+			mainClass: [String] main class of elements which are inside of panel,
+			activeClass: [String] active class of elements which are inside of panel,
+			specialClasses: [Array] special classes of each inner element
+			dataAtr: [String]
 		}
-		this.textColorPanel = {
-			value: book.querySelector('.book__control_color'),
-			elements:
-				Array.from(
-					book.querySelector('.book__control_color')
-						.getElementsByClassName('color'))
+		bookPrefix: special class prefix to add in book HTML element
+	}*/
+	constructor(data) {
+		this.panel = data.mainElem;
+		this.elements = {
+			value: Array.from(
+				this.panel.getElementsByClassName(data.elements.mainClass)
+			),
+			activeClass: data.elements.activeClass,
+			specialClasses: data.elements.specialClasses,
+			dataAtr: data.elements.dataAtr
 		}
-		this.backColorPanel = {
-			value: book.querySelector('.book__control_background'),
-			elements:
-				Array.from(
-					book.querySelector('.book__control_background')
-						.getElementsByClassName('color'))
-		}
-
-		this.registerEvents();
+		this.bookPrefix = data.bookPrefix;
 	}
 
 	registerEvents() {
-		this.fontSizePanel.elements.forEach((item, i) => { //addEventListener on font-size controller
+		this.elements.value.forEach((item, i) => {
 			item.addEventListener('click', (event) => {
 				event.preventDefault();
-				this.fontSizePanel
-					.value
-					.querySelector('.font-size_active')
+				this.panel
+					.querySelector(`.${this.elements.activeClass}`)
 					.classList
-					.remove('font-size_active');
+					.remove(this.elements.activeClass);
 
-				this.fontSizePanel
-					.elements[i]
+				this.elements
+					.value[i]
 					.classList
-					.add('font-size_active');
+					.add(this.elements.activeClass);
 	
-				this.setScaledFontSize(item);
+				this.panel
+					.closest('.book')
+					.classList
+					.forEach((item) => {
+						if ( (item !== 'book') && item.includes(this.bookPrefix) ) {
+							this.panel
+								.closest('.book')
+								.classList
+								.remove(item);
+						}
+					});
+					
+				if (item.classList.contains(this.elements.specialClasses[0]) ||
+					item.classList.contains(this.elements.specialClasses[1]) ) {
+						this.panel
+							.closest('.book')
+							.classList
+							.add( `${this.bookPrefix +
+								item.dataset[this.elements.dataAtr]}` );
+				} 	
 			});
 
 		});
-
-		this.textColorPanel.elements.forEach((item, i) => { //addEventListener on text-color controller
-			item.addEventListener('click', (event) => {
-				event.preventDefault();
-				this.textColorPanel
-					.value
-					.querySelector('.color_active')
-					.classList
-					.remove('color_active');
-
-				this.textColorPanel
-					.elements[i]
-					.classList
-					.add('color_active');
-	
-				this.setTextColor(item);
-			});
-
-		});
-
-		this.backColorPanel.elements.forEach((item, i) => { //addEventListener on background-color controller
-			item.addEventListener('click', (event) => {
-				event.preventDefault();
-				this.backColorPanel
-					.value
-					.querySelector('.color_active')
-					.classList
-					.remove('color_active');
-
-				this.backColorPanel
-					.elements[i]
-					.classList
-					.add('color_active');
-	
-				this.setBackColor(item);
-			});
-
-		});
-	}
-
-	setScaledFontSize(element) {
-		this.book.classList.forEach((item) => {
-			if ( (item !== 'book') && item.includes('book_fs-') ) {
-				this.book.classList.remove(item);
-			}
-		});
-
-		if (element.classList.contains('font-size_small')) {
-			this.book
-				.classList
-				.add(`book_fs-${element.dataset.size}`);
-		} else if (element.classList.contains('font-size_big')) {
-			this.book
-				.classList
-				.add(`book_fs-${element.dataset.size}`);
-		}
-	}
-
-	setTextColor(element) {
-		this.book.classList.forEach((item) => {
-			if ( (item !== 'book') && item.includes('book_color-') ) {
-				this.book.classList.remove(item);
-			}
-		});
-
-		if (element.classList.contains('color_gray')) {
-			this.book
-				.classList
-				.add(`book_color-${element.dataset.color}`);
-		} else if (element.classList.contains('color_whitesmoke')) {
-			this.book
-				.classList
-				.add(`book_color-${element.dataset.color}`);
-		}
-	}
-
-	setBackColor(element) {
-		this.book.classList.forEach((item) => {
-			if ( (item !== 'book') && item.includes('book_bg-') ) {
-				this.book.classList.remove(item);
-			}
-		});
-
-		if (element.classList.contains('color_gray')) {
-			this.book
-				.classList
-				.add(`book_bg-${element.dataset.color}`);
-		} else if (element.classList.contains('color_black')) {
-			this.book
-				.classList
-				.add(`book_bg-${element.dataset.color}`);
-		}
 	}
 }
 
-new Controls(document.getElementById('book'));
+const textPanel = new ControlPanel({
+	mainElem: document.querySelector('.book__control_font-size'),
+	elements: {
+		mainClass: 'font-size',
+		activeClass: 'font-size_active',
+		specialClasses: [
+			'font-size_small',
+			'font-size_big'
+		],
+		dataAtr: 'size'
+	},
+	bookPrefix: 'book_fs-'
+});
+
+const textColorPanel = new ControlPanel({
+	mainElem: document.querySelector('.book__control_color'),
+	elements: {
+		mainClass: 'color',
+		activeClass: 'color_active',
+		specialClasses: [
+			'color_gray',
+			'color_whitesmoke'
+		],
+		dataAtr: 'color'
+	},
+	bookPrefix: 'book_color-'
+});
+
+const backgroundColorPanel = new ControlPanel({
+	mainElem: document.querySelector('.book__control_background'),
+	elements: {
+		mainClass: 'color',
+		activeClass: 'color_active',
+		specialClasses: [
+			'color_gray',
+			'color_black'
+		],
+		dataAtr: 'color'
+	},
+	bookPrefix: 'book_bg-'
+});
+
+textPanel.registerEvents();
+textColorPanel.registerEvents();
+backgroundColorPanel.registerEvents();
