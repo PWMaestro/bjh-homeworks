@@ -4,7 +4,7 @@ class Tooltip {
 		this.tooltip = document.createElement('div');
 		this.tooltip.classList.add('tooltip');
 		this.tooltip.innerText = inNeed.title;
-		this.tooltip.dataset.position = 'right';
+		this.tooltip.dataset.position = 'left';
 
 		this.create();
 		this.registerEvents();
@@ -38,7 +38,6 @@ class Tooltip {
 
 	calcPosition() {
 		const coordinates = this.aim.getBoundingClientRect();
-		console.log(coordinates);
 
 		switch(this.tooltip.dataset.position) {
 			case 'top':

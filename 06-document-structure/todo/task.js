@@ -7,8 +7,8 @@ class ToDoList {
 		this.registerEvents();
 
 		Storage.getFrom().forEach( item => {
-			const task = this.wrapUp(item);
-			this.show(task);
+			const task = this.wrapUp( item );
+			this.show( task );
 		});
 	}
 
@@ -20,29 +20,22 @@ class ToDoList {
 		});
 	}
 
-	wrapUp( {text, index} ) {
+	wrapUp( text ) {
 		const element = document.createElement('div');
 		element.classList.add('task');
-		element.dataset.index = index;
 		element.innerHTML = `
 			<div class="task__title">
 				${text}
 			</div>
 			<a href="#" class="task__remove">&times;</a>
 		`;
-		this.addEvent(
-			{
-				item: element.querySelector('.task__remove'),
-				index
-			}
-		);
+		this.addEvent( element );
 
 		return element;
 	}
 
 	createTask(text) {
-		const index = Storage.getCurrentIndex();
-		const element = this.wrapUp( {text, index} );
+		const element = this.wrapUp( text );
 		
 		Storage.add(text);
 
@@ -50,12 +43,15 @@ class ToDoList {
 		this.input.value = '';
 	}
 
-	addEvent( {item, index} ) {
-		item.addEventListener('click', event => {
-			event.preventDefault();
-			Storage.remove(index);
-			this.remove( event.target.closest('.task') );
-		});		
+	addEvent( item ) {
+		item.querySelector('.task__remove')
+			.addEventListener('click', event => {
+				event.preventDefault();
+				Storage.remove(
+					item.querySelector('.task__title').textContent.trim()
+				);
+				this.remove( event.target.closest('.task') );
+			});		
 	}
 
 	show(item) {
@@ -73,55 +69,26 @@ class ToDoList {
 
 class LocalStorage {
 	constructor() {
-		if ( !localStorage.getItem('counter') ) {
-			localStorage.setItem( 'counter', JSON.stringify({ index: 0 }) );
-			localStorage.setItem( 'box', JSON.stringify({ }) );
+		if ( !localStorage.getItem('box') ) {
+			localStorage.setItem( 'box', JSON.stringify([ ]) );
 		}
 	}
 
 	add(item) {
 		const box = JSON.parse( localStorage.getItem('box') );
-
-		box[this.getCurrentIndex()] = item;
-		localStorage.setItem( 'box', JSON.stringify(box) );
-		this.nextIndex();
+		box.push(item);
+		localStorage.setItem( 'box', JSON.stringify( box ) );
 	}
 
 	getFrom() {
-		const box = JSON.parse( localStorage.getItem('box') ),
-			output = [];
-
-		for (let key in box) {
-			const obj = {
-				text: box[key],
-				index: key
-			}
-			output.push(obj);
-		}
-
-		return output;
+		return JSON.parse( localStorage.getItem('box') );
 	}
 
-	getCurrentIndex() {
-		return JSON.parse( localStorage.getItem('counter') ).index;
-	}
-
-	nextIndex() {
-		const newIndex = JSON.parse( localStorage.getItem('counter') );
-		newIndex.index++;
-		localStorage.setItem( 'counter', JSON.stringify(newIndex) );
-	}
-
-	remove(index) {
+	remove( item ) {
 		const box = JSON.parse( localStorage.getItem('box') );
-		for (let key in box) {
-			// console.log(key);
-			// console.log(index);
-			if (key === index) {
-				delete box[key];
-			}
-		}
-		localStorage.setItem( 'box', JSON.stringify(box) );
+		const index = box.indexOf( item );
+		box.splice(index, 1);
+		localStorage.setItem( 'box', JSON.stringify( box ) );
 	}
 }
 
